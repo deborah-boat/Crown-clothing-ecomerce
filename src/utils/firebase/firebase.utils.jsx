@@ -8,6 +8,9 @@ import {
     GoogleAuthProvider,
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
+    signOut,
+    onAuthStateChanged,
+
 } from 'firebase/auth';
 
 import {
@@ -54,7 +57,10 @@ if(!userSnapshot.exists()){
     const createdAt = new Date();
     try{
         await setDoc(userDocRef, {
-            displayName,email,createdAt,...additionalInformation,
+            displayName,
+            email,
+            createdAt,
+            ...additionalInformation,
         });
     }catch(error){
         console.log('error creating a user',error.message)
@@ -66,16 +72,18 @@ return userDocRef;
 
 export const createAuthUserWithEmailAndPassword = async (email,password) => {
     if(!email || !password) return;
-    return await createAuthUserWithEmailAndPassword(auth, email, password);
+    return await createUserWithEmailAndPassword(auth, email, password);
 };
 
 export const signInAuthUserWithEmailAndPassword = async (email,password) => {
     if(!email || !password) return;
-    return await signInAuthUserWithEmailAndPassword(auth, email, password);
+    return await signInWithEmailAndPassword(auth, email, password);
 };
 
+export const signOutUser =async () => await signOut(auth)
 
-
+export const onAuthStateChangedListener = (callback)=>
+onAuthStateChanged(auth,callback)
 
 
 
